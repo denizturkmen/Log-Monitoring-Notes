@@ -68,6 +68,16 @@ sudo dpkg -i elasticsearch-8.9.0-amd64.deb
 
 ```
 
+Elasticsearch install with script
+``` bash
+# root
+sudo su -
+
+# install
+curl https://raw.githubusercontent.com/denizturkmen/Log-Monitoring-Notes/main/EFK/As%20a%20Service/Master-Slave%20Installation/1-%20Elasticsearch/elastic-install.sh | bash 
+
+```
+
 Elasticsearch service start,enable and restart all elk node. but elasticsearch **must be started**.
 ``` bash
 # enable
