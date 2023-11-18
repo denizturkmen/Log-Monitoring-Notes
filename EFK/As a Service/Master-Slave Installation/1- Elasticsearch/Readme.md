@@ -11,6 +11,33 @@ Elasticsearch: Step by step
 4- Elasticsearck must be created certificate
 
 
+Elasticsearch Component;
+
+Indice
+
+Type
+
+Document
+
+Field
+
+Full Text Search
+
+Index
+
+Mapping
+
+Cluster
+
+Node
+
+Shard
+
+Replica
+
+
+
+
 Set hostname on each node like below
 ``` bash
  192.168.1 40 -> sudo hostnamectl set-hostname elk-master-1
@@ -94,7 +121,7 @@ sudo systemctl restart elasticsearch
 
 ```
 
-**X-pack** enable on master node, but elasticsearch 8.x is comes automatically so it's needn't this step.
+**X-pack** enable on master and data node, but elasticsearch 8.x is comes automatically so it's needn't this step.
 ``` bash
 # root
 sudo su
@@ -119,13 +146,13 @@ sudo su
 cd /etc/elasticsearch
 
 # edit yaml
-vim elasticsearch.yaml
+vim elasticsearch.yml
     cluster.name: elk-production
     node.name: elk-master-1
     node.roles: [ master, data ]
     path.data: /var/lib/elasticsearch
     path.logs: /var/log/elasticsearch
-    #bootstrap.memory_lock: true
+    bootstrap.memory_lock: true
     network.host: 192.168.1.40
     http.port: 9200
     discovery.seed_hosts: ["elk-master-1", "elk-node-1"]
@@ -230,14 +257,17 @@ sudo systemctl restart elasticsearch
 
 Creating a **permanent user** and elastic control
 ``` bash
+# root
+sudo su
+
 # go to Related directory
 cd /usr/share/elasticsearch
 
 # helping command
-sudo ./bin/elasticsearch-reset-password --help
+./bin/elasticsearch-reset-password --help
 
 # reset password
- sudo ./bin/elasticsearch-reset-password -u elastic --interactive
+./bin/elasticsearch-reset-password -u elastic --interactive
 
 # check
 curl -k -u elastic https://node-name:port-number or curl -k -u elastic https://ip_addresses:port-number
@@ -273,7 +303,7 @@ systemctl enable --now elasticsearch
 # edit elasticseacrh.yml. 
 # go to elastic directory
 cd /etc/elasticsearch
-vim  elasticsearch.yml
+vim elasticsearch.yml
     cluster.name: elk-prod
     node.name: elk-node-1
     node.roles: [ data ]
@@ -341,7 +371,7 @@ curl -k -u elastic:q1w2e3r4* https://192.168.1.40:9200/_cluster/health/?pretty
 
 ```
 
-Created certificate for elk 
+Created self-sign certificate for elk ( ssl/tls)
 ``` bash
 # root
 sudo su
@@ -368,10 +398,19 @@ cp elastic-* /etc/elasticsearch/certs/
 cd /etc/elasticsearch/certs
 
 # chown cert directory 
-chown -R elasticsearch:elasticsearch certs
+chown -R root:elasticsearch elastic-*
+chmod 0660 elastic-*
+
+# restart elasticsearch service
+systemctl restart elasticsearch.service
+
+# third, http generate a new local certificate authority
+./bin/elasticsearch-certutil http 
+
 
 
 ```
+
 
 Keystore create on **master node**
 ``` bash
@@ -381,19 +420,18 @@ sudo su
 # go to related directory
 cd /usr/share/elasticsearch
 
-# create keystore
-./bin/elasticsearch-keystore add xpack.security.transport.ssl.keystore.secure_password
-./bin/elasticsearch-keystore add xpack.security.transport.ssl.truststore.secure_password
-
-# solved
+# create keystore http
 ./bin/elasticsearch-keystore add xpack.security.http.ssl.keystore.secure_password
-./bin/elasticsearch-keystore add xpack.security.http.ssl.truststore.secure_password
+# ./bin/elasticsearch-keystore add xpack.security.http.ssl.truststore.secure_password
+
+
+# create keystore transport
 ./bin/elasticsearch-keystore add xpack.security.transport.ssl.keystore.secure_password
 ./bin/elasticsearch-keystore add xpack.security.transport.ssl.truststore.secure_password
 
 # show keystore and truststore
 ./bin/elasticsearch-keystore show xpack.security.http.ssl.keystore.secure_password
-./bin/elasticsearch-keystore show xpack.security.http.ssl.truststore.secure_password
+# ./bin/elasticsearch-keystore show xpack.security.http.ssl.truststore.secure_password
 ./bin/elasticsearch-keystore show xpack.security.transport.ssl.keystore.secure_password
 ./bin/elasticsearch-keystore show xpack.security.transport.ssl.truststore.secure_password
 
@@ -458,17 +496,6 @@ cd /usr/share/elasticsearch
 ./bin/elasticsearch-keystore show xpack.security.transport.ssl.truststore.secure_password
 
 ```
-
-<!-- Generate token on master
-```bash
-# master node
-./bin/elasticsearch-create-enrollment-token -s node
-
-
-# worker node
-./bin/elasticsearch-reconfigure-node --enrollment-token XXXXX
-
-``` -->
 
 
 Useful command
