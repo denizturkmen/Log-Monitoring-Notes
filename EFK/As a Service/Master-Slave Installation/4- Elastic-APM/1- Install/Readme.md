@@ -35,7 +35,7 @@ vim apm-server.yml
 APM service start,enable and restart master node
 ``` bash
 # start
-sudo systemctl restart apm-server.service
+sudo systemctl start apm-server.service
 
 # enable
 sudo systemctl enable apm-server.service
