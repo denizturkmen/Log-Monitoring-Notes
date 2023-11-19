@@ -19,6 +19,21 @@ sudo dpkg -i kibana-8.9.0-amd64.deb
 
 ```
 
+Kibana config 
+``` bash
+# root
+sudo su
+
+# go to directory
+cd /etc/kibana
+
+# open config file
+vim kibana.yml
+    server.host : "192.168.1.40"
+    server.port : 5601
+
+```
+
 Generate a token for kibana
 ``` bash
 # root
@@ -35,24 +50,9 @@ cd /usr/share/elasticsearch
 
 ```
 
-Kibana config 
-``` bash
-# open config file
-vim /etc/kibana/kibana.yml
-    server.host : "192.168.1.40"
-    server.port : 5601
-
-```
-
 
 Kibana service start,enable and restart master node
 ``` bash
-
-sudo /bin/systemctl daemon-reload
-sudo /bin/systemctl enable kibana.service
-sudo systemctl start kibana.service
-sudo systemctl status kibana.service
-
 # deamon-reload
 sudo /bin/systemctl daemon-reload
 
@@ -69,7 +69,16 @@ sudo systemctl status kibana
 sudo systemctl restart kibana
 
 # go to localhost url
-localhost:5601/xxxx
+localhost:5601/xxxx or ip_addresses:5601/xxx
+
+```
+
+ekstra
+``` bash
+sudo /bin/systemctl daemon-reload
+sudo /bin/systemctl enable kibana.service
+sudo systemctl start kibana.service
+sudo systemctl status kibana.service
 
 ```
 
