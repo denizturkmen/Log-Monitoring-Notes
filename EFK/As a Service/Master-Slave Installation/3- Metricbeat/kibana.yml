@@ -1,0 +1,11 @@
+# Module: kibana
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/main/metricbeat-module-kibana.html
+
+- module: kibana
+  metricsets:
+    - status
+  period: 10s
+  hosts: ["192.168.140:5601"]
+  #basepath: ""
+  username: "elastic"
+  password: "q1w2e3r4*"
