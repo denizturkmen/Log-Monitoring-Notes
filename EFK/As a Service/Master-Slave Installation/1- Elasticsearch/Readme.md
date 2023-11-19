@@ -517,6 +517,7 @@ https://discuss.elastic.co/t/cannot-read-configured-pkcs12-keystore-as-a-trustst
 Issue_3_Keystore: https://discuss.elastic.co/t/problem-with-keystore-password-was-incorrect/168950
 Update_cluster_certs: https://opster.com/guides/elasticsearch/how-tos/update-elasticsearch-security-certificates/
 Disable swap for best performance: https://www.elastic.co/guide/en/elasticsearch/reference/master/setup-configuration-memory.html
+Node type: https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html
 
 
 ```
