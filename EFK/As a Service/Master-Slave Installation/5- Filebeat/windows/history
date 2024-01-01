@@ -1,0 +1,48 @@
+ 99  cd /usr/share/elasticsearch
+  100  ./bin/elasticsearch-keystore add "bootstrap.password"
+  101  ./bin/elasticsearch-setup-passwords interactive
+  102  curl -k -u elastic:q1w2e3r4* https://192.168.1.40:9200/_cluster/health/?pretty
+  103  curl -k -u elastic:q1w2e3r42222* https://192.168.1.40:9200/_cluster/health/?pretty
+  104  curl -k -u elastic:q1w2e3r4* https://192.168.1.40:9200/_cluster/health/?pretty
+  105  clear
+  106  curl -L -O https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-8.9.0-amd64.deb
+  107  sudo dpkg -i metricbeat-8.9.0-amd64.deb
+  108  cd /etc/metricbeat/
+  109  vim metricbeat.yml 
+  110  ll
+  111  cd modules.d/
+  112  clear
+  113  ll
+  114  metricbeat modules list
+  115  ll
+  116  metricbeat modules enable system
+  117  cat system.yml 
+  118  cd /etc/elasticsearch/
+  119  vim elasticsearch.yml 
+  120  systemctl restart elasticsearch
+  121  systemctl status elasticsearch
+  122  curl -k -u elastic:q1w2e3r4* https://192.168.1.40:9200/_cluster/health/?pretty
+  123  poweroff 
+  124  curl -k -u elastic:q1w2e3r4* https://192.168.1.40:9200/_cluster/health/?pretty
+  125  #curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-8.9.2-amd64.deb
+  126  curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-8.9.0-amd64.deb
+  127  ll
+  128  dpkg -i filebeat-8.9.0-amd64.deb 
+  129  cd /etc/filebeat/
+  130  ll
+  131  vim filebeat.
+  132  vim filebeat.yml 
+  133  cd /usr/share/
+  134  ll
+  135  cd filebeat/
+  136  ll
+  137  cd bin/
+  138  ./filebeat test config -c /etc/filebeat/filebeat.yml --path.home /usr/share/filebeat/ --path.data /var/lib/filebeat
+  139  ./filebeat test output -c /etc/filebeat/filebeat.yml --path.home /usr/share/filebeat/ --path.data /var/lib/filebeat
+  140  ./filebeat setup -c /etc/filebeat/filebeat.yml --path.home /usr/share/filebeat/ --path.data /var/lib/filebeat
+  141  cd /etc/filebeat/
+  142  ll
+  143  vim filebeat.yml 
+  144  systemctl status filebeat
+  145  systemctl start filebeat
+  146  systemctl status filebeat
