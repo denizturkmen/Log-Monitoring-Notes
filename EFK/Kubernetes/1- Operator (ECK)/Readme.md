@@ -66,14 +66,50 @@ kubectl apply -f elasticsearch.yaml
 PASSWORD=$(kubectl get secret quickstart-es-elastic-user -o go-template='{{.data.elastic | base64decode}}')
 kubectl port-forward service/quickstart-es-http 9200
 curl -u "elastic:$PASSWORD" -k "http://localhost:9200"
+or
+curl -u "elastic:$PASSWORD" -k "https://localhost:9200"
 
 # Secret
 kubectl get secret -n elastic-system elasticsearch-es-elastic-user -o=jsonpath=’{.data.elastic}’ | base64 — decode; echo
+
+```
+
+
+## Installating KIBANA
+``` bash
+# Install
+kubectl apply -f kibana.yaml
+
+# checking
+kubectl get kibana
+or
+kubectl get pod --selector='kibana.k8s.elastic.co/name=quickstart'
+
+# port-forward
+kubectl get service quickstart-kb-http
+kubectl port-forward service/quickstart-kb-http 5601
+
+# curl command
+curl -u "elastic:$PASSWORD" -k "http://localhost:5601"
+or
+curl -u "elastic:$PASSWORD" -k "https://localhost:5601"
+
 
 
 ```
 
 
+
+## Creating Ingress for KIBANA UI
+``` bash
+# Install
+kubectl apply -f ingress.yaml
+
+# adding hosts
+echo "ingress-address-ip> kibana.example.com" | sudo tee -a /etc/hosts
+echo "192.168.1.200 kibana.example.com" | sudo tee -a /etc/hosts
+
+```
 
 
 ## Referance

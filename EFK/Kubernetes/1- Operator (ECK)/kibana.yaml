@@ -3,6 +3,24 @@ kind: Kibana
 metadata:
   name: quickstart
 spec:
+  http:
+    tls:
+      certificate:
+        secretName: elastic-tls
+  version: 8.17.2
+  count: 1
+  elasticsearchRef:
+    name: quickstart
+---
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: quickstart
+spec:
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true
   version: 8.17.2
   count: 1
   elasticsearchRef:
