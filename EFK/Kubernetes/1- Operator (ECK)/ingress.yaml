@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: quickstart-kb-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx  # Change this if using a different ingress controller (e.g., "traefik")
+  rules:
+  - host: kibana.example.com  # Change to your domain or use an IP
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: quickstart-kb-http
+            port:
+              number: 5601

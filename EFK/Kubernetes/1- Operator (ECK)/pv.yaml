@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: elastic-pv
+spec:
+  capacity:
+    storage: 8Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  volumeMode: Filesystem
+  storageClassName: manual
+  hostPath:
+    path: "/mnt/data/elasticsearch"  # Update this path based on your storage setup
+  claimRef:
+    namespace: default
+    name: elasticsearch-data-quickstart-es-default-0
