@@ -5,15 +5,15 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
-  ingressClassName: nginx 
+  ingressClassName: nginx  # Change this if using a different ingress controller (e.g., "traefik")
   rules:
-  - host: kibana.example.com 
+  - host: kibana.example.com  # Change to your domain or use an IP
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: quickstart-kb-http
+            name: kibana-quickstart-kb-http
             port:
               number: 5601

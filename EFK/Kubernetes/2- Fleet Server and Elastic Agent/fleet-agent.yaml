@@ -100,10 +100,14 @@ metadata:
   name: elasticsearch-quickstart
   namespace: default
 spec:
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true
   version: 8.17.2
   nodeSets:
   - name: default
-    count: 3
+    count: 1
     config:
       node.store.allow_mmap: false
 ---

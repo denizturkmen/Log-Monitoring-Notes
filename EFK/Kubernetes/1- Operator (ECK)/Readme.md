@@ -107,7 +107,7 @@ kubectl apply -f ingress.yaml
 
 # adding hosts
 echo "ingress-address-ip> kibana.example.com" | sudo tee -a /etc/hosts
-echo "192.168.1.200 kibana.example.com" | sudo tee -a /etc/hosts
+echo "192.168.1.200       kibana.example.com" | sudo tee -a /etc/hosts
 
 ```
 

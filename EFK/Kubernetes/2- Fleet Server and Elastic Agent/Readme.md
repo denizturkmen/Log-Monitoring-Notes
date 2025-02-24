@@ -1,169 +1,70 @@
 # How to Install and Configure Fleet and Elastic Agent
 
-##
+
+## Operaor Install
 ``` bash
-cat <<EOF | kubectl apply -f -
-apiVersion: agent.k8s.elastic.co/v1alpha1
-kind: Agent
-metadata:
-  name: fleet-server-quickstart
-  namespace: default
-spec:
-  version: 8.17.2
-  kibanaRef:
-    name: kibana-quickstart
-  elasticsearchRefs:
-  - name: elasticsearch-quickstart
-  mode: fleet
-  fleetServerEnabled: true
-  policyID: eck-fleet-server
-  deployment:
-    replicas: 1
-    podTemplate:
-      spec:
-        serviceAccountName: elastic-agent
-        automountServiceAccountToken: true
-        securityContext:
-          runAsUser: 0 
----
-apiVersion: agent.k8s.elastic.co/v1alpha1
-kind: Agent
-metadata:
-  name: elastic-agent-quickstart
-  namespace: default
-spec:
-  version: 8.17.2
-  kibanaRef:
-    name: kibana-quickstart
-  fleetServerRef:
-    name: fleet-server-quickstart
-  mode: fleet
-  policyID: eck-agent
-  daemonSet:
-    podTemplate:
-      spec:
-        serviceAccountName: elastic-agent
-        automountServiceAccountToken: true
-        securityContext:
-          runAsUser: 0 
-        volumes:
-        - name: agent-data
-          emptyDir: {}
----
-apiVersion: kibana.k8s.elastic.co/v1
-kind: Kibana
-metadata:
-  name: kibana-quickstart
-  namespace: default
-spec:
-  version: 8.17.2
-  count: 1
-  elasticsearchRef:
-    name: elasticsearch-quickstart
-  config:
-    xpack.fleet.agents.elasticsearch.hosts: ["https://elasticsearch-quickstart-es-http.default.svc:9200"]
-    xpack.fleet.agents.fleet_server.hosts: ["https://fleet-server-quickstart-agent-http.default.svc:8220"]
-    xpack.fleet.packages:
-      - name: system
-        version: latest
-      - name: elastic_agent
-        version: latest
-      - name: fleet_server
-        version: latest
-    xpack.fleet.agentPolicies:
-      - name: Fleet Server on ECK policy
-        id: eck-fleet-server
-        namespace: default
-        is_managed: true
-        monitoring_enabled:
-          - logs
-          - metrics
-        unenroll_timeout: 900
-        package_policies:
-        - name: fleet_server-1
-          id: fleet_server-1
-          package:
-            name: fleet_server
-      - name: Elastic Agent on ECK policy
-        id: eck-agent
-        namespace: default
-        is_managed: true
-        monitoring_enabled:
-          - logs
-          - metrics
-        unenroll_timeout: 900
-        package_policies:
-          - name: system-1
-            id: system-1
-            package:
-              name: system
----
-apiVersion: elasticsearch.k8s.elastic.co/v1
-kind: Elasticsearch
-metadata:
-  name: elasticsearch-quickstart
-  namespace: default
-spec:
-  version: 8.17.2
-  nodeSets:
-  - name: default
-    count: 3
-    config:
-      node.store.allow_mmap: false
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: elastic-agent
-rules:
-- apiGroups: [""] # "" indicates the core API group
-  resources:
-  - pods
-  - nodes
-  - namespaces
-  verbs:
-  - get
-  - watch
-  - list
-- apiGroups: ["coordination.k8s.io"]
-  resources:
-  - leases
-  verbs:
-  - get
-  - create
-  - update
-- apiGroups: ["apps"]
-  resources:
-  - replicasets
-  verbs:
-  - list
-  - watch
-- apiGroups: ["batch"]
-  resources:
-  - jobs
-  verbs:
-  - list
-  - watch
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: elastic-agent
-  namespace: default
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: elastic-agent
-subjects:
-- kind: ServiceAccount
-  name: elastic-agent
-  namespace: default
-roleRef:
-  kind: ClusterRole
-  name: elastic-agent
-  apiGroup: rbac.authorization.k8s.io
-EOF
+# Install CRD
+kubectl create -f https://download.elastic.co/downloads/eck/2.16.1/crds.yaml
+
+# rbac
+kubectl apply -f https://download.elastic.co/downloads/eck/2.16.1/operator.yaml
+
+# check
+kubectl get po -n elastic-system
+
+# logs
+kubectl -n elastic-system logs -f statefulset.apps/elastic-operator
+
+```
+
+## Install pv
+``` bash
+# Install
+kubectl apply -f pv.yaml
+
+# check
+kubectl get pv 
+kubectl get pvc
+
+```
+
+## Install elastic,kibana,fleet and agent
+``` bash
+# apply
+kubectl apply -f fleet-agent.yaml
+
+# check
+kubectl get po
+
+# checking svc 
+kubectl get svc
+
+```
+
+## Creating Ingress for KIBANA UI
+``` bash
+# Install
+kubectl apply -f ingress.yaml
+
+# secret
+PASSWORD=$(kubectl get secret elasticsearch-quickstart-es-elastic-user -o go-template='{{.data.elastic | base64decode}}')
+echo $PASSWORD
+
+# adding hosts
+echo "ingress-address-ip> kibana.example.com" | sudo tee -a /etc/hosts
+echo "192.168.1.200 kibana.example.com" | sudo tee -a /etc/hosts
+
+```
+
+## 
+``` bash
+
+
+```
+
+
+## Referance
+``` bash
 
 
 ```
