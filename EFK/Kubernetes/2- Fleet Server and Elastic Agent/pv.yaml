@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: elasticsearch-data-pv-0
+spec:
+  capacity:
+    storage: 30Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: elasticsearch-storage
+  claimRef:
+    namespace: default
+    name: elasticsearch-data-elasticsearch-quickstart-es-default-0
+  hostPath:
+    path: /mnt/data/elasticsearch
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: elasticsearch-data-pv-1
+spec:
+  capacity:
+    storage: 30Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: elasticsearch-storage
+  claimRef:
+    namespace: default
+    name: elasticsearch-data-elasticsearch-quickstart-es-default-1
+  hostPath:
+    path: /mnt/data/elasticsearch
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: elasticsearch-data-pv-2
+spec:
+  capacity:
+    storage: 30Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: elasticsearch-storage
+  claimRef:
+    namespace: default
+    name: elasticsearch-data-elasticsearch-quickstart-es-default-2
+  hostPath:
+    path: /mnt/data/elasticsearch
