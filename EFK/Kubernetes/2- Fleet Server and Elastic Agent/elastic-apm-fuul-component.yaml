@@ -115,6 +115,33 @@ spec:
     config:
       node.store.allow_mmap: false
 ---
+apiVersion: apm.k8s.elastic.co/v1
+kind: ApmServer
+metadata:
+  name: apm-server-quickstart
+  namespace: default
+spec:
+  version: 8.17.2
+  count: 1
+  elasticsearchRef:
+    name: elasticsearch-quickstart
+  kibanaRef:
+    name: kibana-quickstart
+  config:
+    output.elasticsearch:
+      hosts: ["https://elasticsearch-quickstart-es-http.default.svc:9200"]
+    apm-server:
+      host: "0.0.0.0:8200"
+      rum.enabled: true
+      ilm.enabled: true
+  podTemplate:
+    spec:
+      containers:
+        - name: apm-server
+          env:
+            - name: LOG_LEVEL
+              value: "info"
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -167,4 +194,19 @@ roleRef:
   kind: ClusterRole
   name: elastic-agent
   apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: apm-server
+  namespace: default
+  labels:
+    apm-server: "true"
+spec:
+  selector:
+    apm.k8s.elastic.co/name: apm-server-quickstart
+  ports:
+    - protocol: TCP
+      port: 8200
+      targetPort: 8200
 EOF

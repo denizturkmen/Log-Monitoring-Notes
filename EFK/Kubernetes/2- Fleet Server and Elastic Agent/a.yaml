@@ -107,7 +107,7 @@ spec:
   http:
     tls:
       selfSignedCertificate:
-        disabled: false
+        disabled: false  # Disable TLS for HTTP-only setup
   version: 8.17.2
   nodeSets:
   - name: default

@@ -1,0 +1,30 @@
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: kibana-quickstart
+  namespace: default
+spec:
+  version: 8.17.2
+  count: 1
+  elasticsearchRef:
+    name: elasticsearch-quickstart
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: false  # Enable self-signed TLS
+  config:
+    elasticsearch.ssl.certificateAuthorities: /usr/share/kibana/config/certs/elasticsearch-ca.crt
+    xpack.fleet.agents.elasticsearch.hosts: ["https://elasticsearch-quickstart-es-http.default.svc:9200"]
+    xpack.fleet.agents.fleet_server.hosts: ["https://fleet-server-quickstart-agent-http.default.svc:8220"]
+  podTemplate:
+    spec:
+      volumes:
+        - name: kibana-certs
+          secret:
+            secretName: kibana-ca  # Secret containing Elasticsearch CA certificate
+      containers:
+        - name: kibana
+          volumeMounts:
+            - name: kibana-certs
+              mountPath: /usr/share/kibana/config/certs
+              readOnly: true

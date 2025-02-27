@@ -1,0 +1,32 @@
+apiVersion: agent.k8s.elastic.co/v1alpha1
+kind: Agent
+metadata:
+  name: fleet-server-quickstart
+  namespace: default
+spec:
+  version: 8.17.2
+  kibanaRef:
+    name: kibana-quickstart
+  elasticsearchRefs:
+    - name: elasticsearch-quickstart
+  mode: fleet
+  fleetServerEnabled: true
+  policyID: eck-fleet-server
+  deployment:
+    replicas: 1
+    podTemplate:
+      spec:
+        serviceAccountName: elastic-agent
+        automountServiceAccountToken: true
+        securityContext:
+          runAsUser: 0
+        volumes:
+          - name: fleet-tls
+            secret:
+              secretName: fleet-server-tls
+        containers:
+          - name: fleet-server
+            volumeMounts:
+              - name: fleet-tls
+                mountPath: /etc/fleet-server/certs
+                readOnly: true
